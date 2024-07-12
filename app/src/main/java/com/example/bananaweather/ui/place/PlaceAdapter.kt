@@ -25,6 +25,8 @@ class PlaceAdapter(private val fragment: PlaceFragment, private val placeList: L
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.place_item, parent, false)
+        //val view_2 = LayoutInflater.from(parent.context).inflate(R.layout.activity_weather, parent, false)
+        //val holder = ViewHolder(view)
 
         return ViewHolder(view)
     }
@@ -35,24 +37,30 @@ class PlaceAdapter(private val fragment: PlaceFragment, private val placeList: L
         holder.placeAddress.text = place.address
 
         holder.itemView.setOnClickListener {
-            Log.e("TAG","onclick position:$position")
-            if (position != RecyclerView.NO_POSITION) {
-                val place = placeList[position]
+            Log.e("TAG", "onclick position:$position")
+
+            val place = placeList[position]
+            val activity = fragment.activity
+            if (activity is WeatherActivity) {
+                activity.getDrawRefresh().closeDrawers()
+                activity.viewModel.locationLng = place.location.lng
+                activity.viewModel.locationLat = place.location.lat
+                activity.viewModel.placeName = place.name
+                activity.refreshWeather()
+            } else {
                 val intent = Intent(holder.itemView.context, WeatherActivity::class.java).apply {
                     putExtra("location_lng", place.location.lng)
                     putExtra("location_lat", place.location.lat)
                     putExtra("place_name", place.name)
                 }
-                Log.e("TAG","test11:$fragment    viewmodel:${fragment.viewModel}")
-                fragment.viewModel.savePlace(place)
-                Log.e("TAG","test22")
                 fragment.startActivity(intent)
-                    fragment.activity?.finish()
-            } else {
-                Log.e("TAG","test333")
+                fragment.activity?.finish()
+
             }
+            fragment.viewModel.savePlace(place)
         }
     }
+
 
     override fun getItemCount() = placeList.size
 }

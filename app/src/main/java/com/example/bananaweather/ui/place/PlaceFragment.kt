@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.bananaweather.MainActivity
 import com.example.bananaweather.R
 import com.example.bananaweather.ui.weather.WeatherActivity
 
@@ -33,8 +34,8 @@ class PlaceFragment : Fragment() {
 
 
         Log.d("hereeee", viewModel.isPlaceSaved().toString())
-        if( viewModel.isPlaceSaved()){
-            Toast.makeText(activity, "MainActivity", Toast.LENGTH_SHORT).show()
+        if( activity is MainActivity && viewModel.isPlaceSaved()){
+//            Toast.makeText(activity, "MainActivity", Toast.LENGTH_SHORT).show()
             val place = viewModel.getSavedPlace()
             val intent = Intent(context,WeatherActivity::class.java).apply {
                 putExtra("location_lng", place.location.lng)
